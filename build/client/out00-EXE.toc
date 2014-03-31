@@ -1,0 +1,9 @@
+('C:\\Users\\36856.BCC.000\\Desktop\\git\\pychat-client\\build\\client\\client.exe',
+ True,
+ False,
+ None,
+ None,
+ [],
+ None,
+ False,
+ 1396274729L)
