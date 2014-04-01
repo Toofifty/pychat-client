@@ -55,7 +55,6 @@ class Input(threading.Thread):
     def __init__(self, client):
         threading.Thread.__init__(self)
         self.client = client
-        #self.start()
         
     def run(self):
         self.get_input(self.client)        
@@ -107,8 +106,11 @@ def process_command(client, command, args):
         print '\tMSG [USER] [MESSAGE...] > Private message a user'
         print '\tJOIN [#CHANNEL] > Join/switch to the specified channel'
         print '\tPART > Part (leave) the current channel'
+        print '\tNICK [NICK] > Change your nick'
         print '\tQUIT > Close the session. May take a moment to fully exit.',
         print 'CTRL+C will terminate the script quickly once /quit is executed.'
+        print '\t. > Throw some errors and shit so it looks like an errored',
+        print 'program.'
         print '\tRAW [ARGS...] > Send raw arguments to the server.',
         print 'Only use if you know what you\'re doing.'
         
@@ -122,6 +124,22 @@ def process_command(client, command, args):
         client.send_irc('QUIT')
         print 'Stopping client...'
         sys.exit()
+        
+    elif command == 'nick':
+        if len(args) > 0:
+            client.send_irc('NICK %s' % args[0])
+            print 'Nick changed to', args[0]
+        else:
+            print 'Insufficient arguments'
+            print 'Usage: /nick [nick]'
+            
+    elif command == 'users':
+        pass
+    
+    elif command == '.':
+        amount = int(args[0]) or 5
+        for i in range(amount):
+            traceback.print_exc()
         
     else:
         print 'Unknown command'
@@ -168,10 +186,10 @@ def main():
                 type = line_separated[1]
                 recipient = line_separated[2]
                 if type == 'PRIVMSG' and recipient.startswith('#'):
-                    message = ' '.join(line_separated[3:])
+                    message = ' '.join(line_separated[3:]).replace(':', '')
                     print '<%s(%s)> %s' % (nick, recipient, message)
                 elif type == 'PRIVMSG':
-                    message = ' '.join(line_separated[3:])
+                    message = ' '.join(line_separated[3:]).replace(':', '')
                     print '<%s(-->YOU)> %s' % (nick, message)
                 elif type == 'JOIN':
                     print '== %s has joined %s' % (nick, recipient)
