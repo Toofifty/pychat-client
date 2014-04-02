@@ -76,7 +76,8 @@ class IRC(socket.socket):
         self.host = config.get('Configuration', 'host')
         self.port = config.getint('Configuration', 'port')
         self.verbose = config.getboolean('Configuration', 'verbose')
-        self.channel = None
+        self.channels = []
+        self.current_channel = None
         
     def send_irc(self, message):
         # May want to add other things here
@@ -98,7 +99,8 @@ class IRC(socket.socket):
         
     def join(self, channel):
         self.send_irc('JOIN %s' % channel)
-        self.channel = channel
+        self.channels.append(channel)
+        self.current_channel = channel
         
     def privmsg(self, recipient, message):
         self.send_irc('PRIVMSG %s :%s' % (recipient, message))
@@ -109,6 +111,9 @@ class IRC(socket.socket):
         
     def get_users(self):
         self.send_irc('LUSERS')
+        
+    def get_channels(self):
+        return self.channels
         
 class Input(threading.Thread):
     """Get user input"""
@@ -131,9 +136,13 @@ class Input(threading.Thread):
                     traceback.print_exc()
                     args = []
                 process_command(client, command, args)
+            elif message.startswith('#'):
+                channel, message = message.split(' ', 1)
+                client.privmsg(channel, message)
+                print '<%s(%s)> %s' % (client.nick, channel, message)
             elif client.channel is not None:
-                client.privmsg(client.channel, message)
-                print '<%s(%s)> %s' % (client.nick, client.channel, message)
+                client.privmsg(client.current_channel, message)
+                print '<%s(%s)> %s' % (client.nick, client.current_channel, message)
             else:
                 print 'You need to join a channel first.'
                 print 'Use /join [#channel] to join one.'
@@ -156,14 +165,14 @@ def process_message(client, message):
         process_command(client, command, args)
     elif client.channel is not None:
         client.privmsg(client.channel, message)
-        print '<%s(%s)> %s' % (client.nick, client.channel, message)
+        print '<%s(%s)> %s' % (client.nick, client.current_channel, message)
     else:
         print 'You need to join a channel first.'
         print 'Use /join [#channel] to join one.'
     
 def process_command(client, command, args): 
 
-    if command == 'join':
+    if command == 'join' or command == 'channel':
         if len(args) > 0:
             client.join(args[0])
         else:
@@ -235,6 +244,10 @@ def process_command(client, command, args):
         else:
             print 'Insufficient parameters'
             print 'Usage: /topic [message...]'
+            
+    elif command == 'broadcast':
+        for c in client.get_channels():
+            client.privmsg(c, ' '.join(args)
     
     elif command == 'getchannel':
         print 'Current channel:', client.channel
@@ -245,7 +258,10 @@ def process_command(client, command, args):
         else:
             amount = 5
         for i in range(amount):
-            traceback.print_exc()
+            try:
+                raise WindowsError
+            except:
+                traceback.print_exc()
         
     else:
         print 'Unknown command'
@@ -275,6 +291,8 @@ def main(client):
         
         for line in temp:
             #print line
+            if 'MOTD' in line:
+                client.joinchannel
             
             if line.startswith('PING'):
                 client.pong(line.replace('PING :', ''))
