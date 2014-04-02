@@ -1,0 +1,11 @@
+('C:\\Users\\36856.BCC.000\\Desktop\\git\\pychat-client\\gui\\build\\client\\out00-PKG.pkg',
+ {'BINARY': 1,
+  'DATA': 1,
+  'EXECUTABLE': 1,
+  'EXTENSION': 1,
+  'PYMODULE': 1,
+  'PYSOURCE': 1},
+ [('out00-PYZ.pyz', 'C:\\Users\\36856.BCC.000\\Desktop\\git\\pychat-client\\gui\\build\\client\\out00-PYZ.pyz', 'PYZ'), ('struct', 'c:\\Python27\\lib\\struct.pyc', 'PYMODULE'), ('pyi_os_path', 'c:\\Python27\\lib\\site-packages\\PyInstaller\\loader\\pyi_os_path.pyc', 'PYMODULE'), ('pyi_archive', 'c:\\Python27\\lib\\site-packages\\PyInstaller\\loader\\pyi_archive.pyc', 'PYMODULE'), ('pyi_importers', 'c:\\Python27\\lib\\site-packages\\PyInstaller\\loader\\pyi_importers.pyc', 'PYMODULE'), ('_pyi_bootstrap', 'c:\\Python27\\lib\\site-packages\\PyInstaller\\loader\\_pyi_bootstrap.py', 'PYSOURCE'), ('pyi_carchive', 'c:\\Python27\\lib\\site-packages\\PyInstaller\\loader\\pyi_carchive.py', 'PYSOURCE'), ('pyi_rth_Tkinter', 'c:\\Python27\\lib\\site-packages\\PyInstaller\\loader\\rthooks\\pyi_rth_Tkinter.py', 'PYSOURCE'), ('client', 'client.py', 'PYSOURCE'), ('client.exe.manifest', 'C:\\Users\\36856.BCC.000\\Desktop\\git\\pychat-client\\gui\\build\\client\\client.exe.manifest', 'BINARY')],
+ True,
+ None,
+ False)
