@@ -17,7 +17,7 @@ import time
 import Tkinter
 from threading import Thread
 
-class SimpleApp(Tkinter.Tk):
+class ChatBox(Tkinter.Tk):
     def __init__(self, parent, client):
         Tkinter.Tk.__init__(self, parent)
         self.parent = parent
@@ -267,7 +267,7 @@ def process_command(client, command, args):
         print 'Unknown command'
     
 def start_input(client):
-    app = SimpleApp(None, client)
+    app = ChatBox(None, client)
     app.title('Chat - DO NOT CLOSE ME')
     app.mainloop()
     
