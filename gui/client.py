@@ -220,7 +220,7 @@ def process_command(client, command, args):
         
     elif command == 'nick':
         if len(args) > 0:
-            client.set_nick(nick)
+            client.set_nick(args[0])
             print 'Nick changed to', args[0]
         else:
             print 'Insufficient parameters'
