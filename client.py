@@ -19,7 +19,8 @@ class IRC(socket.socket):
     """Main Class"""
     def __init__(self, config):
         socket.socket.__init__(self)
-        self.nick = config.get('Configuration', 'nick')
+        self.nick = raw_input('Please enter a nickname:')
+        self.name = self.nick
         self.host = config.get('Configuration', 'host')
         self.port = config.getint('Configuration', 'port')
         self.verbose = config.getboolean('Configuration', 'verbose')
@@ -49,6 +50,13 @@ class IRC(socket.socket):
         
     def privmsg(self, recipient, message):
         self.send_irc('PRIVMSG %s :%s' % (recipient, message))
+        
+    def set_nick(self, nick):
+        self.send_irc('NICK %s' % nick)
+        self.nick = nick
+        
+    def get_users(self):
+        self.send_irc('LUSERS')
         
 class Input(threading.Thread):
     """Get user input"""
@@ -127,7 +135,7 @@ def process_command(client, command, args):
         
     elif command == 'nick':
         if len(args) > 0:
-            client.send_irc('NICK %s' % args[0])
+            client.set_nick(nick)
             print 'Nick changed to', args[0]
         else:
             print 'Insufficient arguments'
