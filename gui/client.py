@@ -115,39 +115,6 @@ class IRC(socket.socket):
     def get_channels(self):
         return self.channels
         
-class Input(threading.Thread):
-    """Get user input"""
-    def __init__(self, client):
-        threading.Thread.__init__(self)
-        self.client = client
-        
-    def run(self):
-        self.get_input(self.client)        
-        
-    def get_input(self, client):
-        while True:
-            message = raw_input('>>')
-            if message.startswith('/'):
-                message = message.replace('/', '')
-                command = message.split(' ', 1)[0]
-                try:
-                    args = message.split(' ')[1:]
-                except Exception, e:
-                    traceback.print_exc()
-                    args = []
-                process_command(client, command, args)
-            elif message.startswith('#'):
-                channel, message = message.split(' ', 1)
-                client.privmsg(channel, message)
-                print '<%s(%s)> %s' % (client.nick, channel, message)
-            elif client.channel is not None:
-                client.privmsg(client.current_channel, message)
-                print '<%s(%s)> %s' % (client.nick, client.current_channel, message)
-            else:
-                print 'You need to join a channel first.'
-                print 'Use /join [#channel] to join one.'
-            time.sleep(1)
-        
 def configuration():
     config = ConfigParser.ConfigParser()
     config.read('config.cfg')
@@ -163,15 +130,21 @@ def process_message(client, message):
             traceback.print_exc()
             args = []
         process_command(client, command, args)
+        
+    elif message.startswith('#'):
+        channel, message = message.split(' ', 1)
+        client.privmsg(channel, message)
+        print '<%s(%s)> %s' % (client.nick, channel, message)
+        
     elif client.channel is not None:
         client.privmsg(client.channel, message)
         print '<%s(%s)> %s' % (client.nick, client.current_channel, message)
+        
     else:
         print 'You need to join a channel first.'
         print 'Use /join [#channel] to join one.'
     
 def process_command(client, command, args): 
-
     if command == 'join' or command == 'channel':
         if len(args) > 0:
             client.join(args[0])
